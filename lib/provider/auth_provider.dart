@@ -16,25 +16,18 @@ class AuthProvider extends ChangeNotifier {
   String role = "";
   int visitors = 0;
   int users = 0;
-  int trackCctv = 0;
-  int manageCctv = 0;
-  int entry = 0;
-  int locations = 0;
   int roles = 0;
   String latitude = "";
   String longitude = "";
 
   loginSetup(BuildContext context, var data) {
+    print(data);
     token = data['token'];
     id = data['user']['user_id'];
     name = data['user']['username'];
     role = data['role'];
     visitors = data['permission']['visitors'];
     users = data['permission']['users'];
-    trackCctv = data['permission']['track_cctv'];
-    manageCctv = data['permission']['manage_cctv'];
-    entry = data['permission']['entry'];
-    locations = data['permission']['locations'];
     roles = data['permission']['roles'];
     Provider.of<CommonProvider>(context, listen: false)
         .setLocation(data['location']);

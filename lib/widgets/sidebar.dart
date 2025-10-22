@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vms_mobile_app/authentication/verification.dart';
 import 'package:vms_mobile_app/provider/common_provider.dart';
+import 'package:vms_mobile_app/screens/mobile/history/history.dart';
 import 'package:vms_mobile_app/screens/mobile/print_wifi.dart';
 import '../decoration/buttons.dart';
 import '../decoration/container.dart';
@@ -79,6 +80,15 @@ class _SideBarState extends State<SideBar> {
                                 .changeNavBar(context, 2);
                             Navigator.of(context).pop();
                           },
+                          title: textSideBar("Black List"),
+                          leading:
+                              const Icon(Icons.block, color: CColors.light)),
+                      ListTile(
+                          onTap: () {
+                            Provider.of<LayoutProvider>(context, listen: false)
+                                .changeNavBar(context, 4);
+                            Navigator.of(context).pop();
+                          },
                           title: textSideBar("Unmatched"),
                           leading:
                               const Icon(Icons.pan_tool, color: CColors.light)),
@@ -89,6 +99,10 @@ class _SideBarState extends State<SideBar> {
                                 .changeNavBar(context, 3);
                             Navigator.of(context).pop();
                           },
+                          // onTap: () => Navigator.of(context).push(
+                          //     MaterialPageRoute(
+                          //         builder: (BuildContext context) =>
+                          //             const HistoryScreen())),
                           leading:
                               const Icon(Icons.history, color: CColors.light)),
                       ListTile(

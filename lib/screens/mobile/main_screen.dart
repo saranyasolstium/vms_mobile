@@ -139,6 +139,7 @@ class _MainScreenState extends State<MainScreen> {
     const EntryScreen(),
     const VisitorScreen(),
     const BlockList(),
+    const HistoryScreen(),
     const UnMatchedScreen(),
   ];
   @override

@@ -45,43 +45,15 @@ class _EntryScreenState extends State<EntryScreen> {
   bool _savingVehicle = false; // vehicle tab Save
   bool _savingWalkIn = false; // walk-in tab Save
 
+  GlobalKey<FormFieldState<List<String>>> _unitsFieldKey =
+      GlobalKey<FormFieldState<List<String>>>();
+
   void _initializeUnits() {
     // Generate units 200-434 (even numbers only)
     for (int i = 200; i <= 434; i += 2) {
       allUnits.add(i.toString());
     }
   }
-
-  void _resetEntryForm() {
-    setState(() {
-      vehicleNo.clear();
-      mobileControl.clear();
-      nameControl.clear();
-      icNumberCont.clear();
-      emailControl.clear();
-      contactPerson.clear();
-      unitNumberCont.clear();
-      companyNoControl.clear();
-      passNoControl.clear();
-
-      selectedPurpose = null;
-      totalPerson = null;
-
-      _image = null; // also clear captured photo if any
-    });
-
-    // also clear any suggestion lists etc.
-    Provider.of<UnitProvider>(context, listen: false).clearUnitList();
-
-    // hide keyboard
-    FocusScope.of(context).unfocus();
-  }
-  // ================== Validation =================================
-
-  bool _isEmpty(TextEditingController c) => c.text.trim().isEmpty;
-  bool _isValidEmail(String s) => s.contains('@') && s.contains('.');
-
-  // ========= Unified, flow-aware + purpose-driven validation =========
 
   String _purposeText() =>
       (selectedPurpose?['purpose'] ?? selectedPurpose?['name'] ?? '')
@@ -232,11 +204,7 @@ class _EntryScreenState extends State<EntryScreen> {
     }
 
     // unit
-    if (currentLocationId == "64f1d7a46fbcc7432ee4889c") {
-      if (requiredSet.contains('unit') && unitsString.toString().isEmpty) {
-        return "Kindly select unit number";
-      }
-    } else {
+    if (currentLocationId != "64f1d7a46fbcc7432ee4889c") {
       if (requiredSet.contains('unit') && unitNumberCont.text.trim().isEmpty) {
         return "Kindly enter unit number";
       }
@@ -315,6 +283,35 @@ class _EntryScreenState extends State<EntryScreen> {
     super.dispose();
   }
 
+  void resetEntryForm() {
+    setState(() {
+      vehicleNo.clear();
+      mobileControl.clear();
+      nameControl.clear();
+      icNumberCont.clear();
+      emailControl.clear();
+      contactPerson.clear();
+      unitNumberCont.clear();
+      companyNoControl.clear();
+      passNoControl.clear();
+
+      selectedPurpose = null;
+      totalPerson = null;
+
+      _image = null;
+
+      // Clear multi-select units
+      selectedUnits.clear();
+      unitsString = "";
+
+      // Create new key to force MultiSelectDialogField to reset completely
+      _unitsFieldKey = GlobalKey<FormFieldState<List<String>>>();
+    });
+
+    Provider.of<UnitProvider>(context, listen: false).clearUnitList();
+    FocusScope.of(context).unfocus();
+  }
+
   bool type = true;
 
   @override
@@ -330,8 +327,6 @@ class _EntryScreenState extends State<EntryScreen> {
           ),
           child: IntrinsicHeight(
             child: Column(mainAxisSize: MainAxisSize.max, children: [
-              // const SizedBox(height: 50),
-              // searchAllScreen(context),
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
                 child: Row(
@@ -346,7 +341,7 @@ class _EntryScreenState extends State<EntryScreen> {
                             splashRadius: 18,
                             onPressed: () => setState(() {
                                   type = true;
-                                  _resetEntryForm();
+                                  resetEntryForm();
 
                                   Provider.of<CommonProvider>(
                                           indexKey.currentContext!,
@@ -365,7 +360,7 @@ class _EntryScreenState extends State<EntryScreen> {
                             splashRadius: 18,
                             onPressed: () => setState(() {
                                   type = false;
-                                  _resetEntryForm();
+                                  resetEntryForm();
                                   vehicleNo.clear();
                                 }),
                             icon: Icon(
@@ -449,9 +444,6 @@ class _EntryScreenState extends State<EntryScreen> {
                               inputFormatters: [UpperCaseTextFormatter()],
                               cursorColor: CColors.shade1,
                               cursorHeight: 24,
-                              // onTap: () => setState(() {
-                              //   enteringData = true;
-                              // }),
                               onChanged: (val) => Provider.of<CommonProvider>(
                                       context,
                                       listen: false)
@@ -494,13 +486,6 @@ class _EntryScreenState extends State<EntryScreen> {
                                   unitNumberCont.clear();
                                   selectedPurpose = null;
                                   totalPerson = null;
-
-                                  // setState(() {
-                                  //   enteringData = false;
-                                  // });
-                                  Provider.of<CommonProvider>(context,
-                                          listen: false)
-                                      .incrementFeedIndex();
                                 }, MediaQuery.of(context).size.width / 2 - 100),
                         );
                       })
@@ -525,9 +510,6 @@ class _EntryScreenState extends State<EntryScreen> {
                                   .getMobileNumberData(val);
                             }
                           },
-                          // onTap: () => setState(() {
-                          //   enteringData = true;
-                          // }),
                           controller: mobileControl,
                           style: FFonts.formFont,
                           decoration: InputDecoration(
@@ -607,9 +589,6 @@ class _EntryScreenState extends State<EntryScreen> {
                         cursorColor: CColors.shade1,
                         cursorHeight: 24,
                         maxLength: 12,
-                        // onTap: () => setState(() {
-                        //   enteringData = true;
-                        // }),
                         onChanged: (val) =>
                             Provider.of<UnitProvider>(context, listen: false)
                                 .getUnitList(val),
@@ -706,15 +685,6 @@ class _EntryScreenState extends State<EntryScreen> {
                           });
                           FocusScope.of(context).unfocus();
                         });
-
-                        // Provider.of<BarcodeProvider>(context, listen: false)
-                        //     .scanBarcode()
-                        //     .then((value) => setState(() {
-                        //           icNumberCont.text = value;
-                        //           icNumberCont.text = icNumberCont.text
-                        //               .replaceRange(1, 5, '****');
-                        //           FocusScope.of(context).unfocus();
-                        //         }));
                       },
                       child: Container(
                         height: 48,
@@ -774,14 +744,12 @@ class _EntryScreenState extends State<EntryScreen> {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  // >>> FIX: use local _savingVehicle instead of provider.commonLoading2 for Save button
                   _savingVehicle
                       ? loading50Button()
                       : Row(
                           children: [
                             SizedBox(
                                 child: buttonWidth("Save", () async {
-                              // keep your validation inside entryFunction
                               setState(() => _savingVehicle = true);
                               try {
                                 await entryFunction();
@@ -795,20 +763,7 @@ class _EntryScreenState extends State<EntryScreen> {
                             SizedBox(
                                 child: buttonWidth("Clear", () {
                               print('Vehicle Entry');
-                              setState(() {
-                                mobileControl.clear();
-                                nameControl.clear();
-                                icNumberCont.clear();
-                                emailControl.clear();
-                                contactPerson.clear();
-                                unitNumberCont.clear();
-                                selectedPurpose = null;
-                                totalPerson = null;
-                                companyNoControl.clear(); // Company Name
-                                passNoControl.clear(); // V pass / C pass
-                                selectedUnits = [];
-                                unitsString = "";
-                              });
+                              resetEntryForm();
                             }, MediaQuery.of(context).size.width / 3 - 16)),
                           ],
                         ),
@@ -1004,13 +959,13 @@ class _EntryScreenState extends State<EntryScreen> {
             const SizedBox(height: 24),
             authField("Name", nameControl, 50, TextInputType.text,
                 TextCapitalization.words),
-
             (currentLocationId == "64f1d7a46fbcc7432ee4889c")
                 ?
                 // Multi-select dropdown for location 9788512142
                 Column(
                     children: [
                       MultiSelectDialogField<String>(
+                        key: _unitsFieldKey, // Add the key here
                         initialValue: selectedUnits,
                         listType: MultiSelectListType.LIST,
                         dialogHeight: 500,
@@ -1234,7 +1189,6 @@ class _EntryScreenState extends State<EntryScreen> {
               ],
             ),
             const SizedBox(height: 24),
-            // >>> FIX: use local _savingWalkIn instead of provider.commonLoading for Save button
             _savingWalkIn
                 ? loading50Button()
                 : Row(
@@ -1252,19 +1206,7 @@ class _EntryScreenState extends State<EntryScreen> {
                       SizedBox(
                           child: buttonWidth("Clear", () {
                         print('walkin');
-                        setState(() {
-                          vehicleNo.clear();
-                          mobileControl.clear();
-                          nameControl.clear();
-                          icNumberCont.clear();
-                          emailControl.clear();
-                          contactPerson.clear();
-                          unitNumberCont.clear();
-                          selectedPurpose = null;
-                          totalPerson = null;
-                          companyNoControl.clear();
-                          passNoControl.clear();
-                        });
+                        resetEntryForm();
                       }, MediaQuery.of(context).size.width / 3 - 16)),
                     ],
                   ),
@@ -1292,10 +1234,6 @@ class _EntryScreenState extends State<EntryScreen> {
         return;
       } else if (totalPerson == null) {
         notif('Failed', "Kindly select number of visitors");
-        return;
-      } else if (unitsString.isEmpty) {
-        // ensure unit(s) selected for this site
-        notif('Failed', "Kindly select unit number");
         return;
       }
     } else {
@@ -1345,20 +1283,7 @@ class _EntryScreenState extends State<EntryScreen> {
         .loadingOff();
     print(value);
     if (value['status'] == "success") {
-      vehicleNo.clear();
-      mobileControl.clear();
-      nameControl.clear();
-      icNumberCont.clear();
-      contactPerson.clear();
-      emailControl.clear();
-      unitNumberCont.clear();
-      companyNoControl.clear();
-      passNoControl.clear();
-      totalPerson = null;
-      selectedPurpose = null;
-      selectedUnits.clear();
-      unitsString = "";
-
+      resetEntryForm(); // Use the reset function instead of individual clears
       return notif('Success', value["message"]);
     } else {
       return notif('Failed', value["message"]);

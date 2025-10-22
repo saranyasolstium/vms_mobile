@@ -1,4 +1,4 @@
-package com.example.vms_mobile_app
+package com.solstium.vms
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -53,6 +53,13 @@ bottomNavigationBar(BuildContext context) => ClipRRect(
                       textStyle: FFonts.gnav),
                   GButton(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
+                      icon: Icons.history,
+                      iconSize: 28,
+                      iconColor: CColors.brand1,
+                      text: 'History',
+                      textStyle: FFonts.gnav),
+                  GButton(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                       icon: Icons.access_alarm,
                       iconSize: 28,
                       iconColor: CColors.brand1,

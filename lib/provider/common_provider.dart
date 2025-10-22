@@ -532,7 +532,7 @@ class CommonProvider extends ChangeNotifier {
         }
       });
     } else {
-      return notif('Failed', "No more visitors to refresh!");
+      return;
     }
   }
 }
