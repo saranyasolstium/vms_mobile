@@ -94,6 +94,10 @@ class _ExitGridState extends State<ExitGrid> {
     widget.data[widget.index]['out_time'] == null
         ? differenceFormattedString(differenceMinutes)
         : differenceFormattedString(exitDifferenceMinutes);
+    final currentLocationId =
+        Provider.of<CommonProvider>(context, listen: false).locations[
+            Provider.of<CommonProvider>(context, listen: false)
+                .selectedLocation]['location_id'];
     return GestureDetector(
       onTap: () => commonDialog(
           indexKey.currentContext!,
@@ -181,9 +185,11 @@ class _ExitGridState extends State<ExitGrid> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 2 - 20,
                             child: content(
-                                "Contact Person",
+                                currentLocationId == "64f1d7a46fbcc7432ee4889c"
+                                    ? "Purpose of Contractor"
+                                    : "Contact Person",
                                 widget.data[widget.index]['contact_person'] ??
-                                    ""),
+                                    "NA"),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 2 - 20,
@@ -408,6 +414,11 @@ class _PopPupState extends State<PopPup> {
     widget.data[widget.index]['out_time'] == null
         ? differenceFormattedString(differenceMinutes)
         : differenceFormattedString(exitDifferenceMinutes);
+    final currentLocationId =
+        Provider.of<CommonProvider>(context, listen: false).locations[
+            Provider.of<CommonProvider>(context, listen: false)
+                .selectedLocation]['location_id'];
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.transparent,
@@ -516,9 +527,11 @@ class _PopPupState extends State<PopPup> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 2 - 20,
                             child: content(
-                                "Contact Person",
+                                currentLocationId == "64f1d7a46fbcc7432ee4889c"
+                                    ? "Purpose of Contractor"
+                                    : "Contact Person",
                                 widget.data[widget.index]['contact_person'] ??
-                                    ""),
+                                    "NA"),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 2 - 20,
