@@ -162,6 +162,42 @@ class CommonProvider extends ChangeNotifier {
     }
   }
 
+  // getVehicleData(String vehicle) {
+  //   var data = {
+  //     "vehicle_no": vehicle,
+  //     "location_id": locations[selectedLocation]['location_id']
+  //   };
+  //   ApiService()
+  //       .postAllUrl(indexKey.currentContext!, "${customUrl}get_visitor_record",
+  //           params: data)
+  //       .then((value) {
+  //     if (value['status'] != "success") {
+  //       blockedVehicle = 0;
+  //       notifyListeners();
+  //     } else {
+  //       if (value['blocked_status'] == 1) {
+  //         blockedVehicle = 1;
+  //         notifyListeners();
+  //       }
+  //       nameControl.text = value['data']['name'] ?? nameControl.text;
+  //       mobileControl.text = value['data']['phone'] ?? mobileControl.text;
+  //       emailControl.text = value['data']['email'] ?? emailControl.text;
+  //       icNumberCont.text = value['data']['ic_number'] ?? icNumberCont.text;
+  //       contactPerson.text =
+  //           value['data']['contact_person'] ?? contactPerson.text;
+  //       unitNumberCont.text = value['data']['unit_no'] ?? unitNumberCont.text;
+  //       totalPerson = value['data']['person_count'] ?? 1;
+  //       notifyListeners();
+  //       if (value['data']['purpose_of_visit'] != null) {
+  //         int index = purpose.indexWhere((element) =>
+  //             element['purpose_id'] == value['data']['purpose_of_visit']);
+  //         selectedPurpose = purpose[index];
+  //         notifyListeners();
+  //       }
+  //     }
+  //   });
+  // }
+
   getVehicleData(String vehicle) {
     var data = {
       "vehicle_no": vehicle,
@@ -172,11 +208,6 @@ class CommonProvider extends ChangeNotifier {
             params: data)
         .then((value) {
       if (value['status'] != "success") {
-        // nameControl.clear();
-        // mobileControl.clear();
-        // emailControl.clear();
-        // icNumberCont.clear();
-        // contactPerson.clear();
         blockedVehicle = 0;
         notifyListeners();
       } else {
@@ -184,6 +215,7 @@ class CommonProvider extends ChangeNotifier {
           blockedVehicle = 1;
           notifyListeners();
         }
+
         nameControl.text = value['data']['name'] ?? nameControl.text;
         mobileControl.text = value['data']['phone'] ?? mobileControl.text;
         emailControl.text = value['data']['email'] ?? emailControl.text;
@@ -191,12 +223,24 @@ class CommonProvider extends ChangeNotifier {
         contactPerson.text =
             value['data']['contact_person'] ?? contactPerson.text;
         unitNumberCont.text = value['data']['unit_no'] ?? unitNumberCont.text;
-        totalPerson = value['data']['person_count'] ?? 1;
+        // if person_count is 0, keep it at 1
+        totalPerson = (value['data']['person_count'] ?? 1) == 0
+            ? 1
+            : (value['data']['person_count'] ?? 1);
         notifyListeners();
-        if (value['data']['purpose_of_visit'] != null) {
-          int index = purpose.indexWhere((element) =>
-              element['purpose_id'] == value['data']['purpose_of_visit']);
-          selectedPurpose = purpose[index];
+
+        final apiPurposeId = value['data']['purpose_of_visit'];
+        if (apiPurposeId != null) {
+          // find in loaded purposes
+          final idx = purpose
+              .indexWhere((element) => element['purpose_id'] == apiPurposeId);
+          if (idx != -1) {
+            // ✅ found – set whole object
+            selectedPurpose = purpose[idx];
+          } else {
+            // ❗ API gave a purpose id that is not in dropdown – clear it
+            selectedPurpose = null;
+          }
           notifyListeners();
         }
       }
@@ -214,42 +258,112 @@ class CommonProvider extends ChangeNotifier {
     return s.replaceFirst(RegExp(r'^\s*#-\s*'), '');
   }
 
-  getMobileNumberData(String mobile) {
-    var data = {
+  Future<Map<String, dynamic>?> getMobileNumberData(String mobile) async {
+    final data = {
       "mobile_no": mobile,
-      "location_id": locations[selectedLocation]['location_id']
+      "location_id": locations[selectedLocation]['location_id'],
     };
-    ApiService()
-        .postAllUrl(
-            indexKey.currentContext!, "${customUrl}get_visitor_record_mobile",
-            params: data)
-        .then((value) {
-      print(value);
-      if (value['status'] != "success") {
-        // nameControl.clear();
-        // emailControl.clear();
-        // icNumberCont.clear();
-        // contactPerson.clear();
-        // blockedVehicle = 0;
-        // notifyListeners();
-      } else {
-        // vehicleNo.text = value['data']['vehicle_no'] ?? "";
-        nameControl.text = value['data']['name'] ?? "";
-        emailControl.text = value['data']['email'] ?? "";
-        icNumberCont.text = value['data']['ic_number'] ?? "";
-        contactPerson.text = value['data']['contact_person'] ?? "";
-        unitNumberCont.text = _cleanUnit(value['data']['unit_no']);
-        totalPerson = value['data']['person_count'] ?? 1;
-        notifyListeners();
-        if (value['data']['purpose_of_visit'] != null) {
-          int index = purpose.indexWhere((element) =>
-              element['purpose_id'] == value['data']['purpose_of_visit']);
-          selectedPurpose = purpose[index];
-          notifyListeners();
-        }
-      }
-    });
+
+    final value = await ApiService().postAllUrl(
+      indexKey.currentContext!,
+      "${customUrl}get_visitor_record_mobile",
+      params: data,
+    );
+
+    print(value);
+
+    // 1) API not success → return null
+    if (value['status'] != "success") {
+      return null;
+    }
+
+    // 2) fill common fields
+    nameControl.text = value['data']['name'] ?? "";
+    emailControl.text = value['data']['email'] ?? "";
+    icNumberCont.text = value['data']['ic_number'] ?? "";
+    contactPerson.text = value['data']['contact_person'] ?? "";
+    unitNumberCont.text = _cleanUnit(value['data']['unit_no']);
+    totalPerson = (value['data']['person_count'] ?? 1) == 0
+        ? 1
+        : (value['data']['person_count'] ?? 1);
+    notifyListeners();
+
+    // 3) normalize API purpose id
+    final raw = value['data']['purpose_of_visit'];
+    int? apiPurposeId;
+    if (raw is int) {
+      apiPurposeId = raw;
+    } else if (raw is String) {
+      apiPurposeId = int.tryParse(raw);
+    }
+
+    // 4) if API didn't send or sent 0 → clear and return null
+    if (apiPurposeId == null || apiPurposeId == 0) {
+      selectedPurpose = null;
+      notifyListeners();
+      return null;
+    }
+
+    // 5) find in current purpose list
+    final idx = purpose.indexWhere(
+      (element) => element['purpose_id'] == apiPurposeId,
+    );
+
+    if (idx != -1) {
+      // ✅ found – set and return it
+      selectedPurpose = purpose[idx];
+      notifyListeners();
+      print('selected purpose from mobile ${selectedPurpose}');
+      return selectedPurpose as Map<String, dynamic>;
+    } else {
+      // ❗ API gave id we don't have → clear and return null
+      selectedPurpose = null;
+      notifyListeners();
+      return null;
+    }
   }
+
+  // getMobileNumberData(String mobile) {
+  //   var data = {
+  //     "mobile_no": mobile,
+  //     "location_id": locations[selectedLocation]['location_id']
+  //   };
+  //   ApiService()
+  //       .postAllUrl(
+  //           indexKey.currentContext!, "${customUrl}get_visitor_record_mobile",
+  //           params: data)
+  //       .then((value) {
+  //     print(value);
+  //     if (value['status'] != "success") {
+  //       // nameControl.clear();
+  //       // emailControl.clear();
+  //       // icNumberCont.clear();
+  //       // contactPerson.clear();
+  //       // blockedVehicle = 0;
+  //       // notifyListeners();
+  //     } else {
+  //       // vehicleNo.text = value['data']['vehicle_no'] ?? "";
+  //       nameControl.text = value['data']['name'] ?? "";
+  //       emailControl.text = value['data']['email'] ?? "";
+  //       icNumberCont.text = value['data']['ic_number'] ?? "";
+  //       contactPerson.text = value['data']['contact_person'] ?? "";
+  //       unitNumberCont.text = _cleanUnit(value['data']['unit_no']);
+  //       totalPerson = value['data']['person_count'] ?? 1;
+  //       notifyListeners();
+  //       final apiPurposeId = value['data']['purpose_of_visit'];
+  //       if (apiPurposeId != null) {
+  //         final idx = purpose
+  //             .indexWhere((element) => element['purpose_id'] == apiPurposeId);
+  //         if (idx != -1) {
+  //           selectedPurpose = purpose[idx];
+  //         } else {
+  //           selectedPurpose = null;
+  //         }
+  //         notifyListeners();
+  //       }
+  //     }
+  //   });
+  // }
 
   int blockedVehicle = 0;
   int feedIndex = 0;

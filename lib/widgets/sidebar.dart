@@ -117,10 +117,15 @@ class _SideBarState extends State<SideBar> {
                               const Icon(Icons.history, color: CColors.light)),
                       ListTile(
                           title: textSideBar("Print Wifi"),
-                          onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const PrintWifi())),
+                          onTap: () {
+                            Provider.of<LayoutProvider>(context, listen: false)
+                                .changeNavBar(context, 3);
+                            Navigator.of(context).pop();
+                          },
+                          // onTap: () => Navigator.of(context).push(
+                          //     MaterialPageRoute(
+                          //         builder: (BuildContext context) =>
+                          //             const PrintWifi())),
                           leading:
                               const Icon(Icons.history, color: CColors.light)),
                       ListTile(

@@ -68,6 +68,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   decoration: InputDecoration(
                     label: const Text("Search"),
                     labelStyle: FFonts.labelStyle,
+                    hintText: "Search by vehile and Mobile",
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: const EdgeInsets.only(left: 18),
                     enabledBorder: const OutlineInputBorder(
