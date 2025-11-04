@@ -458,16 +458,16 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
                     widget.data['get_visitor']?['visitor_name'] ?? '-'),
                 _buildPDFRow(
                     'Mobile No', widget.data['get_visitor']?['mobile'] ?? '-'),
-                _buildPDFRow(
-                    'Email', widget.data['get_visitor']?['email'] ?? '-'),
-                _buildPDFRow(
-                    'Contact Person', widget.data['contact_person'] ?? 'NA'),
+                // _buildPDFRow(
+                //     'Email', widget.data['get_visitor']?['email'] ?? '-'),
+                // _buildPDFRow(
+                //     'Contact Person', widget.data['contact_person'] ?? 'NA'),
                 _buildPDFRow('Unit No', widget.data['unit_no'] ?? '-'),
                 _buildPDFRow('Vehicle No', widget.data['vehicle_no'] ?? '-'),
                 _buildPDFRow(
                     'Purpose', widget.data['visit_reason']?['purpose'] ?? '-'),
-                _buildPDFRow(
-                    'Delay Reason', widget.data['delay_reason'] ?? '-'),
+                // _buildPDFRow(
+                //     'Delay Reason', widget.data['delay_reason'] ?? '-'),
 
                 pw.SizedBox(height: 20),
 
@@ -633,20 +633,20 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
                           widget.data['get_visitor']?['visitor_name'] ?? '-'),
                       _buildDetailRow('Mobile No',
                           widget.data['get_visitor']?['mobile'] ?? '-'),
-                      _buildDetailRow('Email ID',
-                          widget.data['get_visitor']?['email'] ?? '-'),
-                      _buildDetailRow(
-                          currentLocationId == "64f1d7a46fbcc7432ee4889c"
-                              ? "Purpose of Contractor"
-                              : "Contact Person",
-                          widget.data['contact_person'] ?? 'NA'),
+                      // _buildDetailRow('Email ID',
+                      //     widget.data['get_visitor']?['email'] ?? '-'),
+                      // _buildDetailRow(
+                      //     currentLocationId == "64f1d7a46fbcc7432ee4889c"
+                      //         ? "Purpose of Contractor"
+                      //         : "Contact Person",
+                      //     widget.data['contact_person'] ?? 'NA'),
                       _buildDetailRow('Unit No', widget.data['unit_no'] ?? '-'),
                       _buildDetailRow(
                           'Vehicle No', widget.data['vehicle_no'] ?? '-'),
                       _buildDetailRow('Purpose',
                           widget.data['visit_reason']?['purpose'] ?? '-'),
-                      _buildDetailRow(
-                          'Delay Reason', widget.data['delay_reason'] ?? '-'),
+                      // _buildDetailRow(
+                      //     'Delay Reason', widget.data['delay_reason'] ?? '-'),
                     ],
                   ),
                 ),
