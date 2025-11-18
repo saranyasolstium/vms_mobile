@@ -5,6 +5,7 @@ import 'package:vms_mobile_app/authentication/verification.dart';
 import 'package:vms_mobile_app/provider/common_provider.dart';
 import 'package:vms_mobile_app/screens/mobile/history/history.dart';
 import 'package:vms_mobile_app/screens/mobile/print_wifi.dart';
+import 'package:vms_mobile_app/screens/print/print_module.dart';
 import '../decoration/buttons.dart';
 import '../decoration/container.dart';
 import '../decoration/dialogs.dart';
@@ -108,24 +109,23 @@ class _SideBarState extends State<SideBar> {
                       ListTile(
                           title: textSideBar("Print"),
                           onTap: () {
-                            // Navigator.of(context).push(
-                            //   MaterialPageRoute(
-                            //       builder: (BuildContext context) =>
-                            //           const PrinterPage()))
+                            // Navigator.of(context).push(MaterialPageRoute(
+                            //     builder: (BuildContext context) =>
+                            //         const EpsonDemoApp()));
                           },
                           leading:
                               const Icon(Icons.history, color: CColors.light)),
                       ListTile(
                           title: textSideBar("Print Wifi"),
-                          onTap: () {
-                            Provider.of<LayoutProvider>(context, listen: false)
-                                .changeNavBar(context, 3);
-                            Navigator.of(context).pop();
-                          },
-                          // onTap: () => Navigator.of(context).push(
-                          //     MaterialPageRoute(
-                          //         builder: (BuildContext context) =>
-                          //             const PrintWifi())),
+                          // onTap: () {
+                          //   Provider.of<LayoutProvider>(context, listen: false)
+                          //       .changeNavBar(context, 3);
+                          //   Navigator.of(context).pop();
+                          // },
+                          onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const PrintWifi())),
                           leading:
                               const Icon(Icons.history, color: CColors.light)),
                       ListTile(

@@ -11,7 +11,7 @@ import '../../../utilities/loaders.dart';
 import '../exit/visitor_grids.dart';
 
 class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({Key? key}) : super(key: key);
+  const HistoryScreen({super.key});
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
@@ -157,6 +157,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
+                  print(provd.listHistory);
                   return ExitGrid(data: provd.listHistory, index: index);
                 });
       });

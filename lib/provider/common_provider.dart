@@ -207,6 +207,7 @@ class CommonProvider extends ChangeNotifier {
         .postAllUrl(indexKey.currentContext!, "${customUrl}get_visitor_record",
             params: data)
         .then((value) {
+      print('Vehicle added aentry $value');
       if (value['status'] != "success") {
         blockedVehicle = 0;
         notifyListeners();
@@ -216,20 +217,26 @@ class CommonProvider extends ChangeNotifier {
           notifyListeners();
         }
 
-        nameControl.text = value['data']['name'] ?? nameControl.text;
-        mobileControl.text = value['data']['phone'] ?? mobileControl.text;
-        emailControl.text = value['data']['email'] ?? emailControl.text;
+        nameControl.text =
+            value['data']['get_visitor']['visitor_name'] ?? nameControl.text;
+        mobileControl.text =
+            value['data']['get_visitor']['mobile'] ?? mobileControl.text;
+        emailControl.text =
+            value['data']['get_visitor']['email'] ?? emailControl.text;
         icNumberCont.text = value['data']['ic_number'] ?? icNumberCont.text;
         contactPerson.text =
             value['data']['contact_person'] ?? contactPerson.text;
         unitNumberCont.text = value['data']['unit_no'] ?? unitNumberCont.text;
+        companyNoControl.text =
+            value['data']['company_no'] ?? companyNoControl.text;
+        passNoControl.text = value['data']['pass_no'] ?? passNoControl.text;
         // if person_count is 0, keep it at 1
         totalPerson = (value['data']['person_count'] ?? 1) == 0
             ? 1
             : (value['data']['person_count'] ?? 1);
         notifyListeners();
 
-        final apiPurposeId = value['data']['purpose_of_visit'];
+        final apiPurposeId = value['data']['visit_reason']['purpose_id'];
         if (apiPurposeId != null) {
           // find in loaded purposes
           final idx = purpose
@@ -278,49 +285,67 @@ class CommonProvider extends ChangeNotifier {
     }
 
     // 2) fill common fields
-    nameControl.text = value['data']['name'] ?? "";
-    emailControl.text = value['data']['email'] ?? "";
+    nameControl.text = value['data']['get_visitor']['visitor_name'] ?? "";
+    emailControl.text = value['data']['get_visitor']['email'] ?? "";
     icNumberCont.text = value['data']['ic_number'] ?? "";
     contactPerson.text = value['data']['contact_person'] ?? "";
     unitNumberCont.text = _cleanUnit(value['data']['unit_no']);
     totalPerson = (value['data']['person_count'] ?? 1) == 0
         ? 1
         : (value['data']['person_count'] ?? 1);
+    companyNoControl.text =
+        value['data']['company_no'] ?? companyNoControl.text;
+    passNoControl.text = value['data']['pass_no'] ?? passNoControl.text;
     notifyListeners();
 
-    // 3) normalize API purpose id
-    final raw = value['data']['purpose_of_visit'];
-    int? apiPurposeId;
-    if (raw is int) {
-      apiPurposeId = raw;
-    } else if (raw is String) {
-      apiPurposeId = int.tryParse(raw);
+    final apiPurposeId = value['data']['visit_reason']['purpose_id'];
+    if (apiPurposeId != null) {
+      // find in loaded purposes
+      final idx = purpose
+          .indexWhere((element) => element['purpose_id'] == apiPurposeId);
+      if (idx != -1) {
+        // ✅ found – set whole object
+        selectedPurpose = purpose[idx];
+      } else {
+        // ❗ API gave a purpose id that is not in dropdown – clear it
+        selectedPurpose = null;
+      }
+      notifyListeners();
     }
 
-    // 4) if API didn't send or sent 0 → clear and return null
-    if (apiPurposeId == null || apiPurposeId == 0) {
-      selectedPurpose = null;
-      notifyListeners();
-      return null;
-    }
+    // // 3) normalize API purpose id
+    // final raw = value['data']['purpose_of_visit'];
+    // int? apiPurposeId;
+    // if (raw is int) {
+    //   apiPurposeId = raw;
+    // } else if (raw is String) {
+    //   apiPurposeId = int.tryParse(raw);
+    // }
 
-    // 5) find in current purpose list
-    final idx = purpose.indexWhere(
-      (element) => element['purpose_id'] == apiPurposeId,
-    );
+    // // 4) if API didn't send or sent 0 → clear and return null
+    // if (apiPurposeId == null || apiPurposeId == 0) {
+    //   selectedPurpose = null;
+    //   notifyListeners();
+    //   return null;
+    // }
 
-    if (idx != -1) {
-      // ✅ found – set and return it
-      selectedPurpose = purpose[idx];
-      notifyListeners();
-      print('selected purpose from mobile ${selectedPurpose}');
-      return selectedPurpose as Map<String, dynamic>;
-    } else {
-      // ❗ API gave id we don't have → clear and return null
-      selectedPurpose = null;
-      notifyListeners();
-      return null;
-    }
+    // // 5) find in current purpose list
+    // final idx = purpose.indexWhere(
+    //   (element) => element['purpose_id'] == apiPurposeId,
+    // );
+
+    // if (idx != -1) {
+    //   // ✅ found – set and return it
+    //   selectedPurpose = purpose[idx];
+    //   notifyListeners();
+    //   print('selected purpose from mobile ${selectedPurpose}');
+    //   return selectedPurpose as Map<String, dynamic>;
+    // } else {
+    //   // ❗ API gave id we don't have → clear and return null
+    //   selectedPurpose = null;
+    //   notifyListeners();
+    //   return null;
+    // }
   }
 
   // getMobileNumberData(String mobile) {
@@ -418,6 +443,8 @@ class CommonProvider extends ChangeNotifier {
       contactPerson.clear();
       icNumberCont.clear();
       unitNumberCont.clear();
+      companyNoControl.clear();
+      passNoControl.clear();
       selectedPurpose = null;
       totalPerson = null;
       getNotReturned(typeNotReturned);

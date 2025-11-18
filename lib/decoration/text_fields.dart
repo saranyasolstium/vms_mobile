@@ -395,6 +395,58 @@ Widget authFieldCenter(TextEditingController control) => Container(
         ),
       ),
     );
+
+Widget authFieldCenter1(
+  TextEditingController control, {
+  bool enabled = true,
+  String hintText = "",
+  bool showSuffixIcon = false,
+  bool isEditing = false,
+}) =>
+    Container(
+      height: 70,
+      width: 650,
+      padding: const EdgeInsets.only(bottom: 24),
+      child: SizedBox(
+        height: 50,
+        child: TextFormField(
+          cursorColor: CColors.shade1,
+          cursorHeight: 24,
+          textAlign: TextAlign.center,
+          controller: control,
+          enabled: enabled,
+          style: FFonts.formFont.copyWith(
+            color: enabled ? Colors.white : Colors.grey[400],
+          ),
+          decoration: InputDecoration(
+            hintText: hintText,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            contentPadding: const EdgeInsets.only(left: 18, right: 18),
+            enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              borderSide: BorderSide(width: 1, color: CColors.shade1),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              borderSide: BorderSide(width: 1, color: CColors.shade1),
+            ),
+            disabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              borderSide: BorderSide(width: 1, color: Colors.grey),
+            ),
+            suffixIcon: showSuffixIcon
+                ? Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: isEditing
+                        ? Icon(Icons.edit, color: CColors.brand1, size: 20)
+                        : Icon(Icons.check_circle,
+                            color: Colors.green, size: 20),
+                  )
+                : null,
+          ),
+        ),
+      ),
+    );
 Widget buttonAddUser(String name, VoidCallback funct) => SizedBox(
       height: 50,
       width: 130,
