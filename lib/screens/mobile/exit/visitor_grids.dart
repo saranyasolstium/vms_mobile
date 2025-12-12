@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:vms_mobile_app/decoration/text_fields.dart';
 import 'package:vms_mobile_app/main.dart';
+import 'package:vms_mobile_app/screens/mobile/exit/parking_slip_preview.dart';
 import 'package:vms_mobile_app/screens/mobile/exit/printer_helpers.dart';
 import 'package:vms_mobile_app/screens/mobile/exit/visitors_screen.dart';
 import 'package:vms_mobile_app/utilities/localvariable.dart';
@@ -249,7 +250,7 @@ class _ExitGridState extends State<ExitGrid> {
                                       widget.data[widget.index]['company_no'] ??
                                           "NA"),
                                 )
-                              : SizedBox()
+                              : const SizedBox()
                         ]),
                       ]),
                   widget.data[widget.index]['out_time'] == null
@@ -259,35 +260,41 @@ class _ExitGridState extends State<ExitGrid> {
                           child: Row(
                             children: [
                               // Print Button
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PrintViewScreen(
-                                        data: widget.data[widget.index],
+                              currentLocationId == "26f697c540f2015daf77f4a"
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                PrintViewScreen(
+                                              data: widget.data[widget.index],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                              color: CColors.brand1,
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: const Icon(Icons.print,
+                                                color: CColors.dark, size: 12),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          textBlue("PRINT")
+                                        ],
                                       ),
-                                    ),
-                                  );
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: 20,
-                                      width: 20,
-                                      decoration: BoxDecoration(
-                                        color: CColors.brand1,
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: const Icon(Icons.print,
-                                          color: CColors.dark, size: 12),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    textBlue("PRINT")
-                                  ],
-                                ),
-                              ),
+                                    )
+                                  : const SizedBox(),
+
                               const SizedBox(width: 12),
                               GestureDetector(
                                 onTap: () => commonDialog(
@@ -454,110 +461,6 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
     days = hour ~/ 24;
   }
 
-  // Future<void> _generateAndPrintPDF() async {
-  //   try {
-  //     final pdf = pw.Document();
-
-  //     pdf.addPage(
-  //       pw.Page(
-  //         pageFormat: PdfPageFormat.a4,
-  //         build: (pw.Context context) {
-  //           return pw.Column(
-  //             crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //             children: [
-  //               //Header
-  //               pw.Center(
-  //                 child: pw.Text(
-  //                   'VISITOR MANAGEMENT SYSTEM',
-  //                   style: pw.TextStyle(
-  //                     fontSize: 20,
-  //                     fontWeight: pw.FontWeight.bold,
-  //                   ),
-  //                 ),
-  //               ),
-  //               pw.SizedBox(height: 20),
-
-  //               // Visitor Details
-  //               // pw.Text(
-  //               //   'Visitor Details',
-  //               //   style: pw.TextStyle(
-  //               //     fontSize: 16,
-  //               //     fontWeight: pw.FontWeight.bold,
-  //               //   ),
-  //               // ),
-  //               // pw.Divider(),
-  //               // pw.SizedBox(height: 10),
-
-  //               // Visitor Information
-  //               _buildPDFRow('Visitor Name',
-  //                   widget.data['get_visitor']?['visitor_name'] ?? '-'),
-  //               _buildPDFRow(
-  //                   'Mobile No', widget.data['get_visitor']?['mobile'] ?? '-'),
-  //               // _buildPDFRow(
-  //               //     'Email', widget.data['get_visitor']?['email'] ?? '-'),
-  //               // _buildPDFRow(
-  //               //     'Contact Person', widget.data['contact_person'] ?? 'NA'),
-  //               _buildPDFRow('Unit No', widget.data['unit_no'] ?? '-'),
-  //               _buildPDFRow('Vehicle No', widget.data['vehicle_no'] ?? '-'),
-  //               _buildPDFRow(
-  //                   'Purpose', widget.data['visit_reason']?['purpose'] ?? '-'),
-  //               // _buildPDFRow(
-  //               //     'Delay Reason', widget.data['delay_reason'] ?? '-'),
-
-  //               // pw.SizedBox(height: 20),
-
-  //               // // Time Details
-  //               // pw.Text(
-  //               //   'Time Details',
-  //               //   style: pw.TextStyle(
-  //               //     fontSize: 16,
-  //               //     fontWeight: pw.FontWeight.bold,
-  //               //   ),
-  //               // ),
-  //               // pw.Divider(),
-  //               pw.SizedBox(height: 10),
-
-  //               _buildPDFRow('Entry Time',
-  //                   DateFormat('dd MMM yyyy hh:mm a').format(entryTime)),
-  //               // _buildPDFRow(
-  //               //     'Exit Time',
-  //               //     widget.data['out_time'] != null
-  //               //         ? DateFormat('dd MMM yyyy hh:mm a').format(exitTime)
-  //               //         : 'Still Inside'),
-  //               // _buildPDFRow('Total Duration', _getFormattedDuration()),
-
-  //               pw.SizedBox(height: 20),
-
-  //               // Footer
-  //               pw.Center(
-  //                 child: pw.Text(
-  //                   'Generated on: ${DateFormat('dd MMM yyyy hh:mm a').format(DateTime.now())}',
-  //                   style: pw.TextStyle(
-  //                     fontSize: 10,
-  //                     fontStyle: pw.FontStyle.italic,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       ),
-  //     );
-
-  //     // await Printing.layoutPdf(
-  //     //   onLayout: (PdfPageFormat format) async => pdf.save(),
-  //     // );
-  //   } catch (e) {
-  //     print('PDF Generation Error: $e');
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Failed to generate PDF: $e'),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   }
-  // }
-
   pw.Row _buildPDFRow(String label, String value) {
     return pw.Row(
       children: [
@@ -578,32 +481,20 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
     );
   }
 
-  String _getFormattedDuration() {
-    if (widget.data['out_time'] != null) {
-      differenceFormattedString(exitDifferenceMinutes);
-    } else {
-      differenceFormattedString(differenceMinutes);
-    }
-
-    List<String> parts = [];
-    if (days > 0) parts.add('$days Day${days > 1 ? 's' : ''}');
-    if (hours > 0) parts.add('$hours Hr${hours > 1 ? 's' : ''}');
-    if (minutes > 0) parts.add('$minutes Min${minutes > 1 ? 's' : ''}');
-
-    return parts.isEmpty ? '0 Min' : parts.join(' ');
-  }
-
   @override
   Widget build(BuildContext context) {
     timeCalculation();
+    final cp = Provider.of<CommonProvider>(context, listen: false);
+    final currentLocationId = cp.locations[cp.selectedLocation]['location_id'];
+
     widget.data['out_time'] == null
         ? differenceFormattedString(differenceMinutes)
         : differenceFormattedString(exitDifferenceMinutes);
 
-    final currentLocationId =
-        Provider.of<CommonProvider>(context, listen: false).locations[
-            Provider.of<CommonProvider>(context, listen: false)
-                .selectedLocation]['location_id'];
+    // final currentLocationId =
+    //     Provider.of<CommonProvider>(context, listen: false).locations[
+    //         Provider.of<CommonProvider>(context, listen: false)
+    //             .selectedLocation]['location_id'];
 
     return Scaffold(
       appBar: AppBar(
@@ -616,7 +507,6 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
             onPressed: () async {
               await printWithSavedPrefs(context, widget.data);
             },
-            // onPressed: _generateAndPrintPDF,
             tooltip: 'Print/Generate PDF',
           ),
         ],
@@ -657,83 +547,23 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Text(
-                      //   'Visitor Details',
-                      //   style: GoogleFonts.poppins(
-                      //     fontSize: 16,
-                      //     fontWeight: FontWeight.bold,
-                      //     color: CColors.light,
-                      //   ),
-                      // ),
-                      // const Divider(color: CColors.light),
                       const SizedBox(height: 10),
                       _buildDetailRow('Visitor Name',
                           widget.data['get_visitor']?['visitor_name'] ?? '-'),
                       _buildDetailRow('Mobile No',
                           widget.data['get_visitor']?['mobile'] ?? '-'),
-                      // _buildDetailRow('Email ID',
-                      //     widget.data['get_visitor']?['email'] ?? '-'),
-                      // _buildDetailRow(
-                      //     currentLocationId == "64f1d7a46fbcc7432ee4889c"
-                      //         ? "Purpose of Contractor"
-                      //         : "Contact Person",
-                      //     widget.data['contact_person'] ?? 'NA'),
                       _buildDetailRow('Unit No', widget.data['unit_no'] ?? '-'),
                       _buildDetailRow(
                           'Vehicle No', widget.data['vehicle_no'] ?? '-'),
                       _buildDetailRow('Purpose',
                           widget.data['visit_reason']?['purpose'] ?? '-'),
-                      // _buildDetailRow(
-                      //     'Delay Reason', widget.data['delay_reason'] ?? '-'),
                       _buildDetailRow('Entry Time',
                           DateFormat('dd MMM yyyy hh:mm a').format(entryTime)),
-                      // _buildDetailRow(
-                      //     'Exit Time',
-                      //     widget.data['out_time'] != null
-                      //         ? DateFormat('dd MMM yyyy hh:mm a')
-                      //             .format(exitTime)
-                      //         : 'Still Inside'),
-                      // _buildDetailRow(
-                      //     'Total Duration', _getFormattedDuration()),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-
-              // // Time Details Card
-              // Card(
-              //   color: CColors.dark,
-              //   child: Padding(
-              //     padding: const EdgeInsets.all(16),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Text(
-              //           'Time Details',
-              //           style: GoogleFonts.poppins(
-              //             fontSize: 16,
-              //             fontWeight: FontWeight.bold,
-              //             color: CColors.light,
-              //           ),
-              //         ),
-              //         const Divider(color: CColors.light),
-              //         const SizedBox(height: 10),
-              //         _buildDetailRow('Entry Time',
-              //             DateFormat('dd MMM yyyy hh:mm a').format(entryTime)),
-              //         _buildDetailRow(
-              //             'Exit Time',
-              //             widget.data['out_time'] != null
-              //                 ? DateFormat('dd MMM yyyy hh:mm a')
-              //                     .format(exitTime)
-              //                 : 'Still Inside'),
-              //         _buildDetailRow(
-              //             'Total Duration', _getFormattedDuration()),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16),
 
               // Status Card
               Card(
@@ -774,7 +604,6 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
                 child: Container(
                   width: 200,
                   child: ElevatedButton.icon(
-                    // onPressed: _generateAndPrintPDF,
                     onPressed: () async {
                       await printWithSavedPrefs(context, widget.data);
                     },
@@ -789,6 +618,33 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: Container(
+                  width: 200,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              ParkingSlipPreviewPage(data: widget.data),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.print),
+                    label: const Text('Print Preview'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: CColors.brand1,
+                      foregroundColor: CColors.dark,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
