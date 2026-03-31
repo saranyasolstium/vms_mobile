@@ -42,7 +42,7 @@ class _PopPupState extends State<PopPup> {
         Navigator.of(context).pop();
         Provider.of<CommonProvider>(context, listen: false)
             .getNotReturned(typeNotReturned);
-        return notif('Success', val['message']);
+        return notif(context, 'Success', val['message']);
       } else {
         return;
       }

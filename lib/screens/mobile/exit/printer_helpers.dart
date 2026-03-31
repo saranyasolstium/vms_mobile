@@ -26,7 +26,7 @@ Future<void> printWithSavedPrefs(
   // 3) Connect
   final res = await printer.connect(ip, port: port);
   if (res != PosPrintResult.success) {
-    notif('Failed', 'Cannot connect: ${res.msg}');
+    notif(context, 'Failed', 'Cannot connect: ${res.msg}');
     return;
   }
 
@@ -34,9 +34,9 @@ Future<void> printWithSavedPrefs(
     // 4) Build visitor parking slip
     await _printVisitorReceipt(printer, v);
     printer.cut();
-    notif('Success', 'Printed');
+    notif(context, 'Success', 'Printed');
   } catch (e) {
-    notif('Failed', 'Build error: $e');
+    notif(context, 'Failed', 'Build error: $e');
   } finally {
     printer.disconnect();
   }

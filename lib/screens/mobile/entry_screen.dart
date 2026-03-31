@@ -229,105 +229,134 @@ class _EntryScreenState extends State<EntryScreen> {
       return null; // valid
     }
 
-    // Non-OTHER original path
-    final requiredSet = <String>{}
-      ..addAll(_baseRequiredForFlow(isWalkIn: isWalkIn))
-      ..addAll(_requiredFieldsForPurpose(_purposeRule()));
-    print(requiredSet);
-    // vehicle
-    if (requiredSet.contains('vehicle') && vehicleNo.text.trim().isEmpty) {
-      return "Kindly enter vehicle number";
-    }
-
-    // mobile
-    if (requiredSet.contains('mobile')) {
-      if (mobileControl.text.trim().isEmpty) {
-        return "Kindly enter mobile number";
-      }
-      if (mobileControl.text.trim().length < 8) {
-        return "Kindly check your mobile number";
-      }
-    } else {
-      if (mobileControl.text.isNotEmpty &&
-          mobileControl.text.trim().length < 8) {
-        return "Kindly check your mobile number";
-      }
-    }
-
-    // unit (note: you had a != typo previously; keeping your original guard)
-    if (currentLocationId != "64f1d7a46fbcc2ee4889c") {
-      if (requiredSet.contains('unit') && unitNumberCont.text.trim().isEmpty) {
-        return "Kindly enter unit number";
-      }
-    }
-
-    // name
-    if (requiredSet.contains('name') && nameControl.text.trim().isEmpty) {
-      return "Kindly enter visitor name";
-    }
-
-    // company
-    if (requiredSet.contains('company') &&
-        companyNoControl.text.trim().isEmpty) {
-      return "Kindly enter company name";
-    }
-
-    // pass
-    if (requiredSet.contains('pass') && passNoControl.text.trim().isEmpty) {
-      return "Kindly enter V pass / C pass";
-    }
-
-    // email
-    if (requiredSet.contains('email')) {
-      if (emailControl.text.trim().isEmpty) return "Kindly enter email address";
-      if (!_isValidEmailLocal(emailControl.text)) {
-        return "Kindly enter a valid email address";
-      }
-    } else {
-      if (emailControl.text.isNotEmpty &&
-          !_isValidEmailLocal(emailControl.text)) {
-        return "Kindly enter a valid email address";
-      }
-    }
-
-    // contact (respect visibility + site override)
-    final shouldShowContact = _shouldShowContactPersonField(isWalkIn: isWalkIn);
-    if (shouldShowContact) {
-      if (currentLocationId == "64f1d7a46fbcc7432ee4889c") {
-        if (_isContractPurpose() && contactPerson.text.trim().isEmpty) {
-          return "Kindly enter Purpose of Contractor";
-        } else if (requiredSet.contains('contact') &&
-            contactPerson.text.trim().isEmpty) {
-          return "Kindly enter contact person name";
+    if (currentLocationId == "26f697c540f2015daf77f4a") {
+      // Mobile — ALWAYS REQUIRED
+      if (isWalkIn) {
+        // Walk-in: Mobile required
+        if (mobileControl.text.trim().isEmpty) {
+          return "Kindly enter mobile number";
+        }
+        if (mobileControl.text.trim().length < 8) {
+          return "Kindly check your mobile number";
         }
       } else {
-        if (requiredSet.contains('contact') &&
-            contactPerson.text.trim().isEmpty) {
-          return "Kindly enter contact person name";
+        // Vehicle: Vehicle required
+        if (vehicleNo.text.trim().isEmpty) {
+          return "Kindly enter vehicle number";
         }
       }
-    }
 
-    // IC
-    if (currentLocationId != "26f697c540f2015daf77f4a") {
-      if (requiredSet.contains('ic')) {
-        if (icNumberCont.text.trim().isEmpty) return "Kindly enter IC number";
-        if (icNumberCont.text.trim().length <= 4) {
-          return "Kindly check your IC number";
+      if (nameControl.text.trim().isEmpty) {
+        return "Kindly enter visitor name";
+      }
+
+      // Number of Visitors
+      if ((totalPerson == null)) {
+        return "Kindly select number of visitors";
+      }
+    } else {
+      // Non-OTHER original path
+      final requiredSet = <String>{}
+        ..addAll(_baseRequiredForFlow(isWalkIn: isWalkIn))
+        ..addAll(_requiredFieldsForPurpose(_purposeRule()));
+      print(requiredSet);
+      // vehicle
+      if (requiredSet.contains('vehicle') && vehicleNo.text.trim().isEmpty) {
+        return "Kindly enter vehicle number";
+      }
+
+      // mobile
+      if (requiredSet.contains('mobile')) {
+        if (mobileControl.text.trim().isEmpty) {
+          return "Kindly enter mobile number";
+        }
+        if (mobileControl.text.trim().length < 8) {
+          return "Kindly check your mobile number";
         }
       } else {
-        if (icNumberCont.text.isNotEmpty &&
-            icNumberCont.text.trim().length <= 4) {
-          return "Kindly check your IC number";
+        if (mobileControl.text.isNotEmpty &&
+            mobileControl.text.trim().length < 8) {
+          return "Kindly check your mobile number";
         }
       }
-    }
 
-    // persons
-    if (requiredSet.contains('persons') && (totalPerson == null)) {
-      return "Kindly select number of visitors";
-    }
+      // unit (note: you had a != typo previously; keeping your original guard)
+      if (currentLocationId != "64f1d7a46fbcc2ee4889c") {
+        if (requiredSet.contains('unit') &&
+            unitNumberCont.text.trim().isEmpty) {
+          return "Kindly enter unit number";
+        }
+      }
 
+      // name
+      if (requiredSet.contains('name') && nameControl.text.trim().isEmpty) {
+        return "Kindly enter visitor name";
+      }
+
+      // company
+      if (requiredSet.contains('company') &&
+          companyNoControl.text.trim().isEmpty) {
+        return "Kindly enter company name";
+      }
+
+      // pass
+      if (requiredSet.contains('pass') && passNoControl.text.trim().isEmpty) {
+        return "Kindly enter V pass / C pass";
+      }
+
+      // email
+      if (requiredSet.contains('email')) {
+        if (emailControl.text.trim().isEmpty)
+          return "Kindly enter email address";
+        if (!_isValidEmailLocal(emailControl.text)) {
+          return "Kindly enter a valid email address";
+        }
+      } else {
+        if (emailControl.text.isNotEmpty &&
+            !_isValidEmailLocal(emailControl.text)) {
+          return "Kindly enter a valid email address";
+        }
+      }
+
+      // contact (respect visibility + site override)
+      final shouldShowContact =
+          _shouldShowContactPersonField(isWalkIn: isWalkIn);
+      if (shouldShowContact) {
+        if (currentLocationId == "64f1d7a46fbcc7432ee4889c") {
+          if (_isContractPurpose() && contactPerson.text.trim().isEmpty) {
+            return "Kindly enter Purpose of Contractor";
+          } else if (requiredSet.contains('contact') &&
+              contactPerson.text.trim().isEmpty) {
+            return "Kindly enter contact person name";
+          }
+        } else {
+          if (requiredSet.contains('contact') &&
+              contactPerson.text.trim().isEmpty) {
+            return "Kindly enter contact person name";
+          }
+        }
+      }
+
+      // IC
+      if (currentLocationId != "26f697c540f2015daf77f4a") {
+        if (requiredSet.contains('ic')) {
+          if (icNumberCont.text.trim().isEmpty) return "Kindly enter IC number";
+          if (icNumberCont.text.trim().length <= 4) {
+            return "Kindly check your IC number";
+          }
+        } else {
+          if (icNumberCont.text.isNotEmpty &&
+              icNumberCont.text.trim().length <= 4) {
+            return "Kindly check your IC number";
+          }
+        }
+      }
+
+      // persons
+      if (requiredSet.contains('persons') && (totalPerson == null)) {
+        return "Kindly select number of visitors";
+      }
+    }
     return null; // OK
   }
 
@@ -357,9 +386,10 @@ class _EntryScreenState extends State<EntryScreen> {
       passNoControl.clear();
       _unitTextController.clear();
       _otherPurposeCtrl.clear(); // NEW
-
+      remarkControl.clear();
       selectedPurpose = null;
       totalPerson = null;
+      remarkControl.clear();
 
       _image = null;
 
@@ -865,6 +895,8 @@ class _EntryScreenState extends State<EntryScreen> {
                           ),
                         ],
                       ),
+                    authField("Remark", remarkControl, 100,
+                        TextInputType.visiblePassword, TextCapitalization.none),
                     authField("Company Name", companyNoControl, 100,
                         TextInputType.visiblePassword, TextCapitalization.none),
                     authField("V pass / C pass", passNoControl, 100,
@@ -923,8 +955,9 @@ class _EntryScreenState extends State<EntryScreen> {
                                     try {
                                       await entryFunction();
                                     } finally {
-                                      if (mounted)
+                                      if (mounted) {
                                         setState(() => _savingVehicle = false);
+                                      }
                                     }
                                   },
                                   MediaQuery.of(context).size.width / 3 * 2 -
@@ -1360,6 +1393,8 @@ class _EntryScreenState extends State<EntryScreen> {
                     ),
                   ],
                 ),
+              authField("Remark", remarkControl, 100,
+                  TextInputType.visiblePassword, TextCapitalization.none),
               authField("Company Name", companyNoControl, 100,
                   TextInputType.visiblePassword, TextCapitalization.none),
               authField("V pass / C pass", passNoControl, 100,
@@ -1445,13 +1480,11 @@ class _EntryScreenState extends State<EntryScreen> {
   Future<void> entryFunction() async {
     final err = validateFormUnified(isWalkIn: false);
     if (err != null) {
-      notif('Failed', err);
+      notif(context, 'Failed', err);
       return;
     }
 
     final isOther = _isOtherPurpose();
-
-    // NOTE: do NOT blank other fields — send whatever user filled
 
     final cp = Provider.of<CommonProvider>(context, listen: false);
     final currentLocationId = cp.locations[cp.selectedLocation]['location_id'];
@@ -1476,46 +1509,48 @@ class _EntryScreenState extends State<EntryScreen> {
     data.addAll({"other": isOther ? _otherPurposeCtrl.text.trim() : ""});
 
     data.addAll({"in_time": DateTime.now().toString()});
+    data.addAll({"remark": remarkControl.text.trim()});
 
-    await Provider.of<CommonProvider>(context, listen: false).addEntry(data);
+    await Provider.of<CommonProvider>(context, listen: false)
+        .addEntry(context, data);
   }
 
   Future<void> walkIn(String currentLocationId) async {
     // Special site validations
     if (currentLocationId == "64f1d7a46fbcc7432ee4889c") {
       if (mobileControl.text.trim().isEmpty) {
-        notif('Failed', "Kindly enter mobile number");
+        notif(context, 'Failed', "Kindly enter mobile number");
         return;
       } else if (mobileControl.text.trim().length < 8) {
-        notif('Failed', "Kindly check your mobile number");
+        notif(context, 'Failed', "Kindly check your mobile number");
         return;
       } else if (selectedPurpose == null) {
-        notif('Failed', "Kindly select the purpose");
+        notif(context, 'Failed', "Kindly select the purpose");
         return;
       }
 
       if (_isOtherPurpose()) {
         if (_otherPurposeCtrl.text.trim().isEmpty) {
-          notif('Failed', "Kindly specify the other purpose");
+          notif(context, 'Failed', "Kindly specify the other purpose");
           return;
         }
       } else {
         if (nameControl.text.trim().isEmpty) {
-          notif('Failed', "Kindly enter visitor name");
+          notif(context, 'Failed', "Kindly enter visitor name");
           return;
         } else if (totalPerson == null) {
-          notif('Failed', "Kindly select number of visitors");
+          notif(context, 'Failed', "Kindly select number of visitors");
           return;
         }
         if (_isContractPurpose() && contactPerson.text.trim().isEmpty) {
-          notif('Failed', "Kindly enter Purpose of Contractor");
+          notif(context, 'Failed', "Kindly enter Purpose of Contractor");
           return;
         }
       }
     } else {
       final err = validateFormUnified(isWalkIn: true);
       if (err != null) {
-        notif('Failed', err);
+        notif(context, 'Failed', err);
         return;
       }
     }
@@ -1548,6 +1583,7 @@ class _EntryScreenState extends State<EntryScreen> {
           : unitNumberCont.text),
       "image_capture":
           _image != null ? base64Encode(_image!.readAsBytesSync()) : "",
+      "remark": remarkControl.text.trim()
     };
 
     print('Payload $data');
@@ -1564,9 +1600,9 @@ class _EntryScreenState extends State<EntryScreen> {
     print(value);
     if (value['status'] == "success") {
       resetEntryForm();
-      return notif('Success', value["message"]);
+      return notif(context, 'Success', value["message"]);
     } else {
-      return notif('Failed', value["message"]);
+      return notif(context, 'Failed', value["message"]);
     }
   }
 }
@@ -1581,3 +1617,4 @@ TextEditingController emailControl = TextEditingController();
 TextEditingController contactPerson = TextEditingController();
 TextEditingController icNumberCont = TextEditingController();
 TextEditingController unitNumberCont = TextEditingController();
+TextEditingController remarkControl = TextEditingController();

@@ -19,7 +19,7 @@ class _LocationDialogState extends State<LocationDialog> {
 
   check() {
     return Provider.of<CommonProvider>(indexKey.currentContext!, listen: false)
-        .storeSetting();
+        .storeSetting(context);
   }
 
   @override

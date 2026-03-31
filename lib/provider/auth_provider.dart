@@ -55,7 +55,7 @@ class AuthProvider extends ChangeNotifier {
   login(BuildContext context, String username, String password,
       String selectedLocation) {
     if (password.isEmpty || username.isEmpty) {
-      return notif('Failed', "Kindly enter the credentials.");
+      return notif(context, 'Failed', "Kindly enter the credentials.");
     }
     FocusScope.of(context).unfocus();
     // if (selectedLocation == "null") {
@@ -67,7 +67,7 @@ class AuthProvider extends ChangeNotifier {
       authLoadingOff();
       if (val != null) {
         if (val['status'] == "error") {
-          notif('Failed', val['message']);
+          notif(context, 'Failed', val['message']);
         } else {
           loginSetup(context, val['data']);
           // SharedStoreUtils.setValue(LocVar.data, jsonEncode(val['data']).toString());

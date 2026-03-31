@@ -37,6 +37,7 @@ class _EditBlackListState extends State<EditBlackList> {
               blackReason.text.toString().trim(), context);
     } else {
       return notif(
+          context,
           "",
           widget.type == "mobile"
               ? "Kindly check mobile number."

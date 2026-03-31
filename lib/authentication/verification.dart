@@ -70,7 +70,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
       resizeToAvoidBottomInset: true,
       body: WillPopScope(
           onWillPop: () async {
-            return notif('Failed', "Shif Over - Verify or Skip");
+            notif(context, 'Failed', "Shift Over - Verify or Skip");
+            return false; // block back button
           },
           child: Container(
             width: MediaQuery.of(context).size.width,
@@ -153,11 +154,11 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   checkAttendance() {
     if (codeController.text.isEmpty) {
-      notif('Failed', "Enter your code");
+      notif(context, 'Failed', "Enter your code");
       return FocusScope.of(context).nextFocus();
     }
     if (latitude == "" || latitude == "null") {
-      notif('Failed', "Fetching your location");
+      notif(context, 'Failed', "Fetching your location");
       return getLocation();
     }
     if (_image == null) {
@@ -187,7 +188,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
       });
       if (received != null) {
         if (received['status'] == "success") {
-          notif('Success', received['message']);
+          notif(context, 'Success', received['message']);
           if (widget.page) {
             return Navigator.of(context).pop();
           } else {
@@ -197,7 +198,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 (route) => false);
           }
         } else {
-          notif('Failed', received['message']);
+          notif(context, 'Failed', received['message']);
           return;
         }
       }

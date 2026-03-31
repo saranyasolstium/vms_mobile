@@ -29,7 +29,8 @@ class _VisitorScreenState extends State<VisitorScreen> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        Provider.of<CommonProvider>(context, listen: false).addNotReturned();
+        Provider.of<CommonProvider>(context, listen: false)
+            .addNotReturned(context);
       }
     });
   }

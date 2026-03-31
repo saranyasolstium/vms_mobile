@@ -67,9 +67,9 @@ class BlackListProvider extends ChangeNotifier {
       if (received != null) {
         getBlockList();
         Navigator.of(context).pop();
-        return notif("Success", received["message"]);
+        return notif(context, "Success", received["message"]);
       } else {
-        notif("Failed", received["message"]);
+        notif(context, "Failed", received["message"]);
         return;
       }
     });
@@ -84,9 +84,9 @@ class BlackListProvider extends ChangeNotifier {
       if (received != null) {
         getBlockList();
         Navigator.of(context).pop();
-        return notif("Success", received["message"]);
+        return notif(context, "Success", received["message"]);
       } else {
-        return notif("Failed", received["message"]);
+        return notif(context, "Failed", received["message"]);
       }
     });
   }
@@ -113,9 +113,9 @@ class BlackListProvider extends ChangeNotifier {
       if (received != null) {
         getBlockList();
         Navigator.of(context).pop();
-        return notif("Success", received["message"]);
+        return notif(context, "Success", received["message"]);
       } else {
-        notif("Failed", received["message"]);
+        notif(context, "Failed", received["message"]);
 
         return;
       }

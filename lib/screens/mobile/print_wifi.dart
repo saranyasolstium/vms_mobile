@@ -64,7 +64,7 @@ class _PrintWifiState extends State<PrintWifi> {
     await prefs.setString(_kPort, portController.text.trim());
     await prefs.setBool(_kPaper, paper80mm);
     setState(() => _lastSavedAt = DateTime.now());
-    notif('Saved', 'Printer settings saved');
+    notif(context, 'Saved', 'Printer settings saved');
   }
 
   Future<void> _resetDefaults() async {
@@ -81,33 +81,33 @@ class _PrintWifiState extends State<PrintWifi> {
     final portStr = portController.text.trim();
 
     if (ip.isEmpty) {
-      notif('Validation', 'IP address is required');
+      notif(context, 'Validation', 'IP address is required');
       return false;
     }
     // very light IP/domain validation
     final ipRegex = RegExp(r'^[a-zA-Z0-9\.\-]+$');
     if (!ipRegex.hasMatch(ip)) {
-      notif('Validation', 'Invalid IP/Host format');
+      notif(context, 'Validation', 'Invalid IP/Host format');
       return false;
     }
     if (portStr.isEmpty) {
-      notif('Validation', 'Port is required');
+      notif(context, 'Validation', 'Port is required');
       return false;
     }
     final port = int.tryParse(portStr);
     if (port == null || port <= 0 || port > 65535) {
-      notif('Validation', 'Port must be between 1 and 65535');
+      notif(context, 'Validation', 'Port must be between 1 and 65535');
       return false;
     }
     return true;
   }
 
-  Future<void> _onTestPrint() async {
+  Future<void> _onTestPrint(BuildContext context) async {
     if (!_validate()) return;
     // Save before printing so the latest edits persist
     await _savePrefs();
     final port = int.parse(portController.text.trim());
-    await printWifiConnect(ipController.text.trim(), port, paper80mm);
+    await printWifiConnect(context, ipController.text.trim(), port, paper80mm);
   }
 
   @override
@@ -135,8 +135,29 @@ class _PrintWifiState extends State<PrintWifi> {
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              const SizedBox(height: 24),
-              textHeading("Print Wifi/Network"),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // 🔙 Back icon (iOS style)
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+
+                  const SizedBox(width: 4),
+
+                  // 🏷️ Title
+                  Expanded(
+                    child: textHeading("Print Wifi/Network"),
+                  ),
+                ],
+              ),
+
               const SizedBox(height: 24),
 
               // IP
@@ -219,7 +240,8 @@ class _PrintWifiState extends State<PrintWifi> {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: buttonPrimary("Test Print", _onTestPrint),
+                    child: buttonPrimary(
+                        "Test Print", () => _onTestPrint(context)),
                   ),
                 ],
               ),
@@ -254,7 +276,8 @@ class _PrintWifiState extends State<PrintWifi> {
 
 // ---------------- Printing helpers (unchanged) ----------------
 
-Future printWifiConnect(String ip, int port, bool pap) async {
+Future printWifiConnect(
+    BuildContext context, String ip, int port, bool pap) async {
   PaperSize paper = pap ? PaperSize.mm80 : PaperSize.mm58;
   final profile = await CapabilityProfile.load();
   final printer = NetworkPrinter(paper, profile);
@@ -264,9 +287,9 @@ Future printWifiConnect(String ip, int port, bool pap) async {
   if (res == PosPrintResult.success) {
     testReceipt(printer);
     printer.disconnect();
-    notif('Success', "Print Success");
+    notif(context, 'Success', "Print Success");
   } else {
-    notif('Failed', 'Er: ${res.msg}');
+    notif(context, 'Failed', 'Er: ${res.msg}');
   }
 }
 
@@ -296,8 +319,6 @@ void testReceipt(NetworkPrinter printer) {
   printer.feed(2);
   printer.cut();
 }
-
-
 
 // import 'package:esc_pos_printer/esc_pos_printer.dart';
 // import 'package:esc_pos_utils/esc_pos_utils.dart';

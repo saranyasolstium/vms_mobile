@@ -241,16 +241,20 @@ class _ExitGridState extends State<ExitGrid> {
                           ),
                         ]),
                         Wrap(children: [
-                          currentLocationId == "64f1d7a46fbcc7432ee4889c"
-                              ? SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2 -
-                                      20,
-                                  child: content(
-                                      "Company",
-                                      widget.data[widget.index]['company_no'] ??
-                                          "NA"),
-                                )
-                              : const SizedBox()
+                          // currentLocationId == "64f1d7a46fbcc7432ee4889c"
+                          //     ?
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2 - 20,
+                            child: content("Company",
+                                widget.data[widget.index]['company_no'] ?? "-"),
+                          ),
+
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2 - 20,
+                            child: content("Remark",
+                                widget.data[widget.index]['remark'] ?? "-"),
+                          )
+                          // : const SizedBox()
                         ]),
                       ]),
                   widget.data[widget.index]['out_time'] == null
@@ -491,11 +495,6 @@ class _PrintViewScreenState extends State<PrintViewScreen> {
         ? differenceFormattedString(differenceMinutes)
         : differenceFormattedString(exitDifferenceMinutes);
 
-    // final currentLocationId =
-    //     Provider.of<CommonProvider>(context, listen: false).locations[
-    //         Provider.of<CommonProvider>(context, listen: false)
-    //             .selectedLocation]['location_id'];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Visitor Details'),
@@ -718,7 +717,7 @@ class _PopPupState extends State<PopPup> {
         Navigator.of(context).pop();
         Provider.of<CommonProvider>(context, listen: false)
             .getNotReturned(typeNotReturned);
-        return notif('Succ', val['message']);
+        return notif(context, 'Success', val['message']);
       } else {
         return;
       }
@@ -740,7 +739,7 @@ class _PopPupState extends State<PopPup> {
         Navigator.of(context).pop();
         Provider.of<CommonProvider>(context, listen: false)
             .getNotReturned(typeNotReturned);
-        return notif('Success', val['message']);
+        return notif(context, 'Success', val['message']);
       } else {
         return;
       }

@@ -94,19 +94,13 @@ class CommonProvider extends ChangeNotifier {
 
   getEntryFeed() {
     loadingOn();
-    // successMessage(
-    //     "${customUrl}get_entry_feeds/${locations[selectedLocation]['location_id']}");
+
     ApiService()
         .getAllUrl(indexKey.currentContext!,
             "${customUrl}get_entry_feeds/${locations[selectedLocation]['location_id']}")
         .then((val) {
       loadingOff();
-      // commonDialog(
-      //     indexKey.currentContext!,
-      //     Center(
-      //       child: text10(val.toString()),
-      //     ),
-      //     500);
+
       if (val != null) {
         if (val["status"] == "error") {
           feeds = [];
@@ -118,11 +112,23 @@ class CommonProvider extends ChangeNotifier {
             nextFeedPage = val['data']['next_page_url'] ?? "";
             if (feeds[feedIndex]['license_plate_number'] == null) {
               vehicleNo.clear();
+
               return notifyListeners();
             } else {
               List<String> stringArray =
                   feeds[feedIndex]['license_plate_number'].split("/");
               vehicleNo.text = stringArray[0];
+              nameControl.clear();
+              mobileControl.clear();
+              emailControl.clear();
+              contactPerson.clear();
+              icNumberCont.clear();
+              unitNumberCont.clear();
+              companyNoControl.clear();
+              passNoControl.clear();
+              remarkControl.clear();
+              selectedPurpose = null;
+              totalPerson = null;
               getVehicleData(stringArray[0]);
               return notifyListeners();
             }
@@ -137,7 +143,7 @@ class CommonProvider extends ChangeNotifier {
 
   String nextFeedPage = "";
 
-  addEntryFeeds() {
+  addEntryFeeds(BuildContext context) {
     if (nextFeedPage != "0") {
       loadingOn();
       ApiService()
@@ -158,7 +164,7 @@ class CommonProvider extends ChangeNotifier {
         }
       });
     } else {
-      return notif('Failed', "No more feeds to refresh!");
+      return notif(context, 'Failed', "No more feeds to refresh!");
     }
   }
 
@@ -417,7 +423,7 @@ class CommonProvider extends ChangeNotifier {
     return notifyListeners();
   }
 
-  addEntry(Map<String, String> data) {
+  addEntry(BuildContext context, Map<String, String> data) {
     data.addAll({"entry_feed": feeds[feedIndex]['id'].toString()});
     data.addAll({
       "location_id": locations[selectedLocation]['location_id'].toString(),
@@ -447,8 +453,9 @@ class CommonProvider extends ChangeNotifier {
       passNoControl.clear();
       selectedPurpose = null;
       totalPerson = null;
+      remarkControl.clear();
       getNotReturned(typeNotReturned);
-      return notif('Success', received['message']);
+      return notif(context, 'Success', received['message']);
     });
   }
 
@@ -462,6 +469,7 @@ class CommonProvider extends ChangeNotifier {
         .then((received) {
       loadingOff();
       if (received['status'] == "success") {
+        print("response  $received");
         feedNotReturned = received['visitors']['data'];
         notifyListeners();
         nextNotReturned = received['visitors']['next_page_url'] ?? "0";
@@ -478,7 +486,7 @@ class CommonProvider extends ChangeNotifier {
   String nextNotReturned = "";
   bool notReturnedLoad = false;
 
-  addNotReturned() {
+  addNotReturned(BuildContext context) {
     if (nextNotReturned != "0") {
       notReturnedLoad = true;
       notifyListeners();
@@ -501,7 +509,7 @@ class CommonProvider extends ChangeNotifier {
         }
       });
     } else {
-      return notif('Failed', "No more visitors to refresh!");
+      return notif(context, 'Failed', "No more visitors to refresh!");
     }
   }
 
@@ -556,7 +564,7 @@ class CommonProvider extends ChangeNotifier {
     });
   }
 
-  storeSetting() {
+  storeSetting(BuildContext context) {
     var data = {
       "user_id":
           Provider.of<AuthProvider>(indexKey.currentContext!, listen: false)
@@ -567,7 +575,7 @@ class CommonProvider extends ChangeNotifier {
       "exit_camera": cameraList[exitCameraInt]['feed_id'],
     };
     if (exitCameraInt == entryCameraInt) {
-      notif('Failed', "Select different entry and exit camera");
+      notif(context, 'Failed', "Select different entry and exit camera");
       return;
     }
     ApiService()
@@ -576,7 +584,7 @@ class CommonProvider extends ChangeNotifier {
         .then((received) {
       if (received != null) {
         if (received['status'] == "success") {
-          notif('Success', received['messages']);
+          notif(context, 'Success', received['messages']);
           getUnMatched();
           getNotReturned(typeNotReturned);
           getEntryFeed();

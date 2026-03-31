@@ -48,7 +48,7 @@ class _AddBlackListState extends State<AddBlackList> {
                 .toString()
                 .trim()); // adjust signature if needed
       } else {
-        notif("", "Kindly check vehicle number.");
+        notif(context, "", "Kindly check vehicle number.");
       }
     } else {
       // Mobile
@@ -62,7 +62,7 @@ class _AddBlackListState extends State<AddBlackList> {
                 .toString()
                 .trim()); // adjust signature if needed
       } else {
-        notif("", "Kindly check mobile number.");
+        notif(context, "", "Kindly check mobile number.");
       }
     }
   }
@@ -109,7 +109,7 @@ class _AddBlackListState extends State<AddBlackList> {
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   dividerColor: Colors.black,
-                  tabBarTheme: const TabBarTheme(
+                  tabBarTheme: const TabBarThemeData(
                     dividerColor: Colors.transparent,
                     indicatorSize: TabBarIndicatorSize.label,
                     labelStyle: TextStyle(

@@ -84,6 +84,7 @@ Widget authField(String label, TextEditingController control, int max,
         child: TextFormField(
           cursorColor: CColors.shade1,
           cursorHeight: 24,
+          cursorWidth: 2,
           maxLength: max,
           controller: control,
           textCapitalization: textCapitalization,
@@ -114,6 +115,7 @@ Widget authField3(String label, TextEditingController control, int max,
         child: TextFormField(
           cursorColor: CColors.shade1,
           cursorHeight: 24,
+          cursorWidth: 2,
           maxLength: max,
           controller: control,
           textCapitalization: textCapitalization,
@@ -145,6 +147,7 @@ Widget authField2(String label, TextEditingController control,
         child: TextFormField(
           cursorColor: CColors.shade1,
           cursorHeight: 24,
+          cursorWidth: 2,
           keyboardType: textInputType,
           controller: control,
           style: FFonts.formFont,
@@ -171,6 +174,7 @@ Widget authFieldDrop(String label, TextEditingController control) => Padding(
         child: TextFormField(
           cursorColor: CColors.shade1,
           cursorHeight: 24,
+          cursorWidth: 2,
           controller: control,
           style: FFonts.formFont,
           decoration: InputDecoration(
@@ -198,6 +202,7 @@ Widget searchField(String label, TextEditingController control) => SizedBox(
       child: TextFormField(
         cursorColor: CColors.shade1,
         cursorHeight: 24,
+        cursorWidth: 2,
         controller: control,
         style: FFonts.formFont,
         decoration: InputDecoration(
@@ -228,6 +233,7 @@ Widget attendanceField(String label, TextEditingController control) => SizedBox(
       child: TextFormField(
         cursorColor: CColors.shade1,
         cursorHeight: 24,
+        cursorWidth: 2,
         controller: control,
         style: FFonts.formFont,
         decoration: InputDecoration(
@@ -263,6 +269,7 @@ Widget searchFieldWeb(
       child: TextFormField(
         cursorColor: CColors.shade1,
         cursorHeight: 24,
+        cursorWidth: 2,
         controller: control,
         style: FFonts.formFont,
         decoration: InputDecoration(
@@ -295,6 +302,7 @@ Widget formField2(String label, TextEditingController control) => Padding(
         child: TextFormField(
           cursorColor: CColors.shade2,
           cursorHeight: 24,
+          cursorWidth: 2,
           controller: control,
           style: FFonts.formFont,
           decoration: InputDecoration(
@@ -322,6 +330,7 @@ Widget authFieldEntry(String label, TextEditingController control) => Container(
         child: TextFormField(
           cursorColor: CColors.shade1,
           cursorHeight: 24,
+          cursorWidth: 2,
           controller: control,
           style: FFonts.formFont,
           decoration: InputDecoration(
@@ -349,6 +358,7 @@ Widget authParagraph(String label, TextEditingController control,
           cursorColor: CColors.shade1,
           cursorHeight: 24,
           maxLines: 2,
+          cursorWidth: 2,
           controller: control,
           textCapitalization: textCapitalization,
           keyboardType: textInputType,
@@ -379,6 +389,7 @@ Widget authFieldCenter(TextEditingController control) => Container(
         child: TextFormField(
           cursorColor: CColors.shade1,
           cursorHeight: 24,
+          cursorWidth: 2,
           textAlign: TextAlign.center,
           controller: control,
           style: FFonts.formFont,
@@ -412,6 +423,7 @@ Widget authFieldCenter1(
         child: TextFormField(
           cursorColor: CColors.shade1,
           cursorHeight: 24,
+          cursorWidth: 2,
           textAlign: TextAlign.center,
           controller: control,
           enabled: enabled,

@@ -148,7 +148,7 @@ class _GridChildUnmatchedState extends State<GridChildUnmatched> {
                           .then((received) {
                         setState(() => loading = false);
                         if (received['status'] == "success") {
-                          return notif('Success', received['message']);
+                          return notif(context, 'Success', received['message']);
                         } else {
                           return commonDialog(
                               context,
@@ -270,7 +270,7 @@ class _PopPupState extends State<PopPup> {
         Navigator.of(context).pop();
         Provider.of<CommonProvider>(indexKey.currentContext!, listen: false)
             .getUnMatched();
-        return notif('Success', val['message']);
+        return notif(context, 'Success', val['message']);
       } else {
         return;
       }
@@ -300,7 +300,7 @@ class _PopPupState extends State<PopPup> {
 
   setUnmatchedCall() {
     if (selected == 1000) {
-      return notif('Failed', "Select the matching field");
+      return notif(context, 'Failed', "Select the matching field");
     }
     var data = {
       "entry_id": selectedId.toString(),
@@ -314,11 +314,11 @@ class _PopPupState extends State<PopPup> {
         loading = true;
       });
       if (value['status'] == "success") {
-        notif('Failed', "Feed mapped & checkout success.");
+        notif(context, 'Failed', "Feed mapped & checkout success.");
         Provider.of<CommonProvider>(context, listen: false).getUnMatched();
         return Navigator.of(context).pop();
       } else {
-        notif('Failed', "Some technical error happened...");
+        notif(context, 'Failed', "Some technical error happened...");
         return;
       }
     });
